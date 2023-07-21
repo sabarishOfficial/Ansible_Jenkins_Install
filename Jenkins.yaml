@@ -1,0 +1,31 @@
+- name: jenkins_installation
+  hosts: '*'
+  become: yes
+  tasks:
+    - name: jenkins installation_key
+      apt_key:
+        url: 'https://pkg.jenkins.io/debian/jenkins.io-2023.key'
+        state: present
+    - name: repo_add
+      apt_repository:
+        repo: 'deb https://pkg.jenkins.io/debian-stable binary/'
+        state: present
+    - name: updated
+      apt:
+        update_cache: yes
+    - name: java_installation
+      apt:
+        name: "{{ package }}"
+        state: present
+      vars:
+        package:
+          - openjdk-11-jdk
+    - name: jenkins_installation
+      apt:
+        name: jenkins
+        update_cache: yes
+        state: present
+    - name: jenkins_server_start
+      service:
+        name: jenkins
+        state: started
